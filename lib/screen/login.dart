@@ -1,5 +1,10 @@
-import 'package:adminduk_puger/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:adminduk_puger/theme.dart';
+import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
+import 'package:adminduk_puger/cubit/Auth/Auth_repository.dart';
+import 'package:adminduk_puger/cubit/Auth/Auth_state.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,77 +14,95 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool _obscureText = true; // Menyimpan status tampilan password
+  bool _obscureText = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(30.0),
         child: Center(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 150),
-              Text(
-                "Adminduk",
-                style: TextStyle(
-                  fontSize: 30,
-                  color: Colors.black,
-                  height: 1.0,
+              const SizedBox(height: 150),
+
+              // Logo & Title
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "Adminduk\n",
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: Colors.black,
+                      ),
+                    ),
+                    TextSpan(
+                      text: "PUGER",
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: dongker,
+                      ),
+                    ),
+                  ],
                 ),
+                textAlign: TextAlign.center,
               ),
-              Text(
-                "PUGER",
-                style: TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  height: 1.0,
-                ),
-              ),
-              SizedBox(height: 60),
-              Text('Silahkan login ke akun anda', style: TextStyle()),
-              SizedBox(height: 20),
+
+              const SizedBox(height: 60),
+              const Text('Silahkan login ke akun anda'),
+
+              const SizedBox(height: 20),
+
+              // Email Input
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Masukan Email',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30), // Sudut melengkung
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  prefixIcon: Icon(Icons.person),
+                  prefixIcon: const Icon(Icons.person),
                 ),
               ),
-              SizedBox(height: 20),
+
+              const SizedBox(height: 20),
+
+              // Password Input
               TextField(
-                obscureText:
-                    _obscureText, // Menggunakan nilai dari _obscureText
+                controller: _passwordController,
+                obscureText: _obscureText,
                 decoration: InputDecoration(
                   labelText: 'Masukan Password',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30), // Sudut melengkung
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  prefixIcon: Icon(Icons.lock),
+                  prefixIcon: const Icon(Icons.lock),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscureText
-                          ? Icons.remove_red_eye_outlined
-                          : Icons.visibility_off_outlined,
+                          ? Icons.visibility_off_outlined
+                          : Icons.remove_red_eye_outlined,
                       color: Colors.grey,
                     ),
                     onPressed: () {
                       setState(() {
-                        _obscureText =
-                            !_obscureText; // Toggle antara true/false
+                        _obscureText = !_obscureText;
                       });
                     },
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+
+              const SizedBox(height: 10),
               Align(
-                alignment: Alignment.centerRight, // Menempatkan teks di kanan
+                alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
                     print("Lupa Password pressed");
@@ -90,35 +113,41 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
-                  print("Login button pressed");
+              const SizedBox(height: 40),
+              BlocConsumer<AuthCubit, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthSuccess) {
+                    Navigator.pushReplacementNamed(context, '/home');
+                  } else if (state is AuthFailure) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(state.error)));
+                  }
                 },
-                child: Text(
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  'Login',
-                ),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 20),
-                  textStyle: TextStyle(fontSize: 18),
-                  backgroundColor: dongker,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  maximumSize: Size.fromHeight(150),
-                ),
+                builder: (context, state) {
+                  return ElevatedButton(
+                    onPressed:
+                        state is AuthLoading
+                            ? null
+                            : () {
+                              context.read<AuthCubit>().login(
+                                _emailController.text,
+                                _passwordController.text,
+                              );
+                            },
+                    child:
+                        state is AuthLoading
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text("Login"),
+                  );
+                },
               ),
-              SizedBox(
-                height: 20,
-              ), // Jarak antara tombol Login dan teks pendaftaran
+
+              const SizedBox(height: 20),
               RichText(
                 text: TextSpan(
                   children: [
-                    TextSpan(
+                    const TextSpan(
                       text: "Belum punya akun? ",
                       style: TextStyle(color: Colors.black),
                     ),

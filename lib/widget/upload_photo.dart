@@ -23,7 +23,7 @@ class ImagePickerField extends StatelessWidget {
       cameraIcon: Icon(Icons.add_a_photo, color: Colors.deepPurple),
       previewAutoSizeWidth: true,
       maxWidth: MediaQuery.of(context).size.width,
-      fit: BoxFit.cover,
+      fit: BoxFit.fitWidth,
       decoration: InputDecoration(
         labelText: labelText,
         border: OutlineInputBorder(

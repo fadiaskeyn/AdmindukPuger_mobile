@@ -34,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header dengan efek melengkung
             SizedBox(
               width: double.infinity,
               child: Container(
@@ -166,11 +165,46 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisSpacing: 10,
         childAspectRatio: 1.3,
         children: [
-          CardItem(title: "Kartu Tanda\nPenduduk (KTP)", iconPath: "ktp.png"),
-          CardItem(title: "Kartu Keluarga\n(KK)", iconPath: "kk.png"),
-          CardItem(title: "Akta Kelahiran", iconPath: "aktehidup.png"),
-          CardItem(title: "Akta Kematian", iconPath: "aktemati.png"),
-          CardItem(title: "Surat Pindah", iconPath: "suratpindah.png"),
+          CardItem(
+            title: "Kartu Tanda\nPenduduk (KTP)",
+            iconPath: "ktp.png",
+            onPress: () {
+              Navigator.pushNamed(context, '/ktpform');
+              print('diclick');
+            },
+          ),
+          CardItem(
+            title: "Kartu Keluarga\n(KK)",
+            iconPath: "kk.png",
+            onPress: () {
+              Navigator.pushNamed(context, '/kkform');
+              print('diclick');
+            },
+          ),
+          CardItem(
+            title: "Akta Kelahiran",
+            iconPath: "aktehidup.png",
+            onPress: () {
+              Navigator.pushNamed(context, '/birthcertif');
+              print('diclick');
+            },
+          ),
+          CardItem(
+            title: "Akta Kematian",
+            iconPath: "aktemati.png",
+            onPress: () {
+              Navigator.pushNamed(context, '/diecertif');
+              print('diclick');
+            },
+          ),
+          CardItem(
+            title: "Surat Pindah",
+            iconPath: "suratpindah.png",
+            onPress: () {
+              Navigator.pushNamed(context, '/ktpform');
+              print('diclick');
+            },
+          ),
         ],
       ),
     );

@@ -1,7 +1,10 @@
+import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
+import 'package:adminduk_puger/cubit/Auth/Auth_repository.dart';
 import 'package:adminduk_puger/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:adminduk_puger/widget/bottom_nav.dart';
+import 'package:adminduk_puger/theme.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -12,6 +15,7 @@ class _SettingsPageState extends State<SettingsPage> {
   final int _currentIndex = 2;
 
   final List<String> _routes = ['/home', '/submission', '/setting'];
+  final authcubit = AuthCubit(AuthRepository());
 
   void _onTap(BuildContext context, int index) {
     Navigator.pushReplacementNamed(context, _routes[index]);
@@ -33,7 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
       body: Stack(
         children: [
           Container(
-            height: 120, // Tinggi dari background abu-abu
+            height: 120,
             decoration: BoxDecoration(
               color: Colors.grey[300],
               borderRadius: const BorderRadius.only(
@@ -158,9 +162,15 @@ class _SettingsPageState extends State<SettingsPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text(
-                      "LOG OUT",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    child: TextButton(
+                      onPressed: () async {
+                        authcubit.logout();
+                        Navigator.of(context).pushReplacementNamed('/splash');
+                      },
+                      child: const Text(
+                        "LOG OUT",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                     ),
                   ),
                 ],

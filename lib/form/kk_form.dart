@@ -6,14 +6,14 @@ import 'package:adminduk_puger/widget/upload_photo.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_state.dart';
 
-class KtpForm extends StatefulWidget {
-  KtpForm({Key? key}) : super(key: key);
+class KkForm extends StatefulWidget {
+  KkForm({Key? key}) : super(key: key);
 
   @override
-  _KtpFormState createState() => _KtpFormState();
+  _KKFormState createState() => _KKFormState();
 }
 
-class _KtpFormState extends State<KtpForm> {
+class _KKFormState extends State<KkForm> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
 
@@ -30,21 +30,26 @@ class _KtpFormState extends State<KtpForm> {
       final userId = authState.userId;
       final token = authState.token;
       final formData = FormData.fromMap({
-        'user_id': userId, // Tambahkan user_id
+        'user_id': userId,
         'form': await MultipartFile.fromFile(
           _formKey.currentState!.value['form'][0].path,
         ),
-        'kk': await MultipartFile.fromFile(
-          _formKey.currentState!.value['KK'][0].path,
+        'ktp': await MultipartFile.fromFile(
+          _formKey.currentState!.value['ktp'][0].path,
+        ),
+        'maried_certificated': await MultipartFile.fromFile(
+          _formKey.currentState!.value['maried_certificated'][0].path,
         ),
       });
 
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'http://localhost:8000/api/ektp',
+          'http://localhost:8000/api/kk',
           data: formData,
-          options: Options(headers: {"Authorization": "Bearer $token"}),
+          options: Options(
+            headers: {"Au_KtpFormStatethorization": "Bearer $token"},
+          ),
         );
 
         if (response.statusCode == 200) {
@@ -70,7 +75,7 @@ class _KtpFormState extends State<KtpForm> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Pembuatan KTP'),
+        title: const Text('Pembuatan KK'),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
@@ -106,11 +111,16 @@ class _KtpFormState extends State<KtpForm> {
                   ),
                   const SizedBox(height: 15),
                   ImagePickerField(
-                    name: 'KK',
-                    labelText: 'Upload Foto Kartu Keluarga',
+                    name: 'ktp',
+                    labelText: 'Upload Foto KTP',
                     maxImages: 1,
                   ),
                   const SizedBox(height: 20),
+                  ImagePickerField(
+                    name: 'maried_certificated',
+                    labelText: 'Akte Nikah jika sudah menikah',
+                    maxImages: 1,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
