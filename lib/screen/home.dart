@@ -117,12 +117,15 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildCategoryItem(
-            icon: Icons.add_circle_outline,
-            label: "Daftar\nDokumen",
+            assetPath: 'assets/images/icons/documents.png',
+            label: "Daftar\nFormulir",
           ),
           _buildCategoryItem(
-            icon: Icons.folder_outlined,
+            assetPath: 'assets/images/icons/riwayat.png',
             label: "Riwayat\nPengajuan",
+            onTap: () {
+              Navigator.pushNamed(context, '/submission');
+            },
           ),
           _buildCategoryItem(
             icon: Icons.help_outline,
@@ -133,16 +136,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCategoryItem({required IconData icon, required String label}) {
+  Widget _buildCategoryItem({
+    IconData? icon,
+    String? assetPath,
+    VoidCallback? onTap,
+    required String label,
+  }) {
     return Column(
       children: [
-        Container(
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.blue.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child:
+                icon != null
+                    ? Icon(icon, color: Colors.blue, size: 24)
+                    : Image.asset(assetPath!, width: 24, height: 24),
           ),
-          child: Icon(icon, color: Colors.blue, size: 24),
         ),
         SizedBox(height: 8),
         Text(
@@ -201,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
             title: "Surat Pindah",
             iconPath: "suratpindah.png",
             onPress: () {
-              Navigator.pushNamed(context, '/ktpform');
+              Navigator.pushNamed(context, '/moving_letter');
               print('diclick');
             },
           ),

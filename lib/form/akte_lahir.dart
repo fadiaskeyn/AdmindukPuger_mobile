@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:adminduk_puger/widget/upload_photo.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_state.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 class BirthCertif extends StatefulWidget {
   BirthCertif({Key? key}) : super(key: key);
@@ -28,13 +29,14 @@ class _KtpFormState extends State<BirthCertif> {
         setState(() => _isLoading = false);
         return;
       }
-      final String status = "Proses";
+      final String status = "Diproses";
       final userId = authState.userId;
       final token = authState.token;
       print("User ID: $userId");
 
       final formData = FormData.fromMap({
         'user_id': userId,
+        'name': _formKey.currentState!.value['name'],
         'form': await MultipartFile.fromFile(
           _formKey.currentState!.value['form'][0].path,
         ),
@@ -61,7 +63,6 @@ class _KtpFormState extends State<BirthCertif> {
         ),
         'status': status,
       });
-
       print("Mengirim data ke API...");
 
       try {
@@ -127,17 +128,26 @@ class _KtpFormState extends State<BirthCertif> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 20),
-                      Stack(
-                        children: [
-                          ImagePickerField(
-                            name: 'form',
-                            labelText:
-                                'Upload foto Formulir Perekaman yang sudah diisi',
-                            maxImages: 1,
-                          ),
-                        ],
+                      const SizedBox(height: 15),
+                      FormBuilderTextField(
+                        name: 'name',
+                        decoration: const InputDecoration(
+                          labelText: 'Nama Pengaju',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                        ]),
                       ),
+                      const SizedBox(height: 15),
+
+                      ImagePickerField(
+                        name: 'form',
+                        labelText:
+                            'Upload foto Formulir Perekaman yang sudah diisi',
+                        maxImages: 1,
+                      ),
+
                       const SizedBox(height: 15),
                       ImagePickerField(
                         name: 'mom_ktp',

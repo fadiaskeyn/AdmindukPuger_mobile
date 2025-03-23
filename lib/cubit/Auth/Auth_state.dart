@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 abstract class AuthState extends Equatable {
-  const AuthState(); // Gunakan const untuk efisiensi memori
+  const AuthState();
 
   @override
   List<Object?> get props => [];
@@ -24,8 +24,20 @@ class AuthSuccess extends AuthState {
 
 class AuthFailure extends AuthState {
   final String error;
-  const AuthFailure(this.error);
+  AuthFailure(this.error);
+}
 
-  @override
-  List<Object?> get props => [error];
+class AuthEmailNotVerified extends AuthState {
+  final int userId;
+  final String email;
+
+  AuthEmailNotVerified(this.userId, this.email);
+}
+
+class AuthVerificationEmailSent extends AuthState {}
+
+class AuthRegistrationSuccess extends AuthState {
+  final String email;
+
+  AuthRegistrationSuccess(this.email);
 }

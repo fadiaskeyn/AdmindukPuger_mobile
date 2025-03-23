@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:adminduk_puger/theme.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
-import 'package:adminduk_puger/cubit/Auth/Auth_repository.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_state.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/gestures.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -31,30 +32,29 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 150),
 
               // Logo & Title
-              Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "Adminduk\n",
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                        color: Colors.black,
-                      ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Adminduk",
+                    style: GoogleFonts.poppins(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      height: 1.0,
                     ),
-                    TextSpan(
-                      text: "PUGER",
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                        color: dongker,
-                      ),
+                  ),
+                  Text(
+                    "PUGER",
+                    style: GoogleFonts.poppins(
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                      color: dongker,
+                      height: 1.0,
                     ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
+                  ),
+                ],
               ),
-
               const SizedBox(height: 60),
               const Text('Silahkan login ke akun anda'),
 
@@ -113,15 +113,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 30),
               BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
-                  if (state is AuthSuccess) {
-                    Navigator.pushReplacementNamed(context, '/home');
+                  if (state is AuthEmailNotVerified) {
+                    // Tampilkan snackbar saat email belum diverifikasi
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Email belum terverifikasi, silahkan cek email',
+                        ),
+                        duration: Duration(seconds: 5),
+                      ),
+                    );
                   } else if (state is AuthFailure) {
+                    // Tampilkan error message
                     ScaffoldMessenger.of(
                       context,
                     ).showSnackBar(SnackBar(content: Text(state.error)));
+                  } else if (state is AuthSuccess) {
+                    // Navigasi ke halaman beranda atau dashboard
+                    Navigator.of(context).pushReplacementNamed('/home');
                   }
                 },
                 builder: (context, state) {
@@ -137,8 +149,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                     child:
                         state is AuthLoading
-                            ? CircularProgressIndicator(color: Colors.white)
-                            : Text("Login"),
+                            ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                            : Text('Masuk'),
                   );
                 },
               ),
@@ -157,6 +171,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: dongker,
                         fontWeight: FontWeight.bold,
                       ),
+                      recognizer:
+                          TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushNamed(context, '/regist');
+                            },
                     ),
                   ],
                 ),

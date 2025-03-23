@@ -1,12 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adminduk_puger/theme.dart';
 import 'package:adminduk_puger/widget/bottom_nav.dart';
 import 'package:adminduk_puger/widget/submission_list.dart';
+import 'package:adminduk_puger/cubit/submission_cubit.dart';
+import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
 
-class SubmissionPage extends StatelessWidget {
+class SubmissionPage extends StatefulWidget {
+  const SubmissionPage({super.key});
+
+  @override
+  State<SubmissionPage> createState() => _SubmissionPageState();
+}
+
+class _SubmissionPageState extends State<SubmissionPage> {
   final int _currentIndex = 1;
-
   final List<String> _routes = ['/home', '/submission', '/setting'];
+
+  @override
+  void initState() {
+    super.initState();
+    final authCubit = context.read<AuthCubit>();
+    final String userId = authCubit.getUserId().toString();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SubmissionCubit>().fetchSubmissions(userId);
+    });
+  }
+
+  Future<void> _loadUserIdAndFetchSubmissions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+
+    if (userId != null) {
+      context.read<SubmissionCubit>().fetchSubmissions(userId);
+    } else {
+      // Handle kalau userId nggak ketemu, misal redirect ke login
+      print("User ID not found. Redirect to login maybe?");
+    }
+  }
 
   void _onTap(BuildContext context, int index) {
     Navigator.pushReplacementNamed(context, _routes[index]);
@@ -15,10 +47,9 @@ class SubmissionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Background Header
           Container(
             height: 150,
             decoration: BoxDecoration(
@@ -34,22 +65,20 @@ class SubmissionPage extends StatelessWidget {
             ),
             child: Column(
               children: [
-                SizedBox(height: 30), // Spasi atas
-                Text(
+                const SizedBox(height: 30),
+                const Text(
                   "Pengajuan Dokumen",
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 15), // Spasi atas
-                _buildSearchBar(), // Search Bar
+                const SizedBox(height: 15),
+                _buildSearchBar(),
               ],
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 50.0),
-                child: SubmissionList(),
-              ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: SubmissionList(),
             ),
           ),
         ],
@@ -60,39 +89,37 @@ class SubmissionPage extends StatelessWidget {
       ),
     );
   }
-}
 
-Widget _buildSearchBar() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 1),
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white, // Latar belakang putih
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Warna shadow
-            spreadRadius: 1, // Seberapa luas shadow
-            blurRadius: 5, // Seberapa kabur shadow
-            offset: Offset(0, 3), // Posisi shadow (horizontal, vertical)
-          ),
-        ],
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.search),
-          hintText: "Search",
-          filled: true, // Mengaktifkan latar belakang
-          fillColor: Colors.white, // Latar belakang TextField tetap putih
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
-              color: Colors.blue,
-            ), // Menambahkan warna border saat fokus
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 1),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: TextField(
+          decoration: InputDecoration(
+            prefixIcon: Icon(Icons.search),
+            hintText: "Search",
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.blue),
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

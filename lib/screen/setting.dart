@@ -1,10 +1,10 @@
-import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
-import 'package:adminduk_puger/cubit/Auth/Auth_repository.dart';
-import 'package:adminduk_puger/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:adminduk_puger/widget/bottom_nav.dart';
+import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
 import 'package:adminduk_puger/theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:dio/dio.dart';
+import 'package:adminduk_puger/widget/bottom_nav.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -13,81 +13,133 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final int _currentIndex = 2;
-
   final List<String> _routes = ['/home', '/submission', '/setting'];
-  final authcubit = AuthCubit(AuthRepository());
+  String? name;
+  String? email;
+  String? phone;
+  String? address;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
 
   void _onTap(BuildContext context, int index) {
     Navigator.pushReplacementNamed(context, _routes[index]);
   }
 
+  Future<void> _loadUserData() async {
+    // Ambil token menggunakan authcubit
+    final token = await context.read<AuthCubit>().getToken();
+
+    if (token != null) {
+      try {
+        // Fetch user data using the token
+        Dio dio = Dio();
+        Response response = await dio.get(
+          "http://localhost:8000/api/user",
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+        );
+
+        if (response.statusCode == 200) {
+          setState(() {
+            name = response.data['name'];
+            email = response.data['email'];
+            phone =
+                response.data['phone'] ??
+                'Not Available'; // Add phone if available
+            address =
+                response.data['address'] ??
+                'Not Available'; // Add address if available
+          });
+        } else {
+          print('Failed to fetch user data');
+        }
+      } catch (e) {
+        print("Error fetching user data: $e");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        backgroundColor: Colors.grey[200],
-        title: const Text(
-          'Pengaturan',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-      ),
       body: Stack(
         children: [
           Container(
-            height: 120,
+            height: 150,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomCenter,
+                colors: [putih, biru],
+              ),
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(34),
                 bottomRight: Radius.circular(34),
               ),
             ),
+            child: Column(
+              children: [
+                const SizedBox(height: 30, width: double.infinity),
+                const Text(
+                  "Pengaturan",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 15),
+              ],
+            ),
           ),
+          // Positioned Card
+          Positioned(
+            top: 100, // Adjust top position as needed
+            left: 16,
+            right: 16,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 100,
+                ),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor: dongker,
+                      child: const Icon(
+                        Icons.person,
+                        size: 40,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      name ?? 'Loading...',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Main content below the Card
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 250),
                   Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 100,
-                      ),
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: dongker,
-                            child: const Icon(
-                              Icons.person,
-                              size: 40,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'nama',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Card(
+                    color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -101,27 +153,41 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.phone, color: dongker),
+                              Icon(Icons.phone, color: dongker, size: 30),
                               SizedBox(width: 12),
                               Text(
-                                "+62 897 4324 6780",
-                                style: TextStyle(fontSize: 16),
+                                phone ?? 'Not Available',
+                                style: TextStyle(fontSize: 20),
                               ),
                             ],
                           ),
-                          const Divider(),
+                          const SizedBox(height: 10),
                           Row(
                             children: [
-                              Icon(Icons.email, color: dongker),
+                              Icon(Icons.email, color: dongker, size: 30),
                               SizedBox(width: 12),
-                              Text('email', style: TextStyle(fontSize: 16)),
+                              Text(
+                                email ?? 'Not Available',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(Icons.location_on, color: dongker, size: 30),
+                              SizedBox(width: 12),
+                              Text(
+                                address ?? 'Not Available',
+                                style: TextStyle(fontSize: 20),
+                              ),
                             ],
                           ),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -130,18 +196,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     child: Column(
                       children: [
                         ListTile(
-                          title: const Text("Pengaturan Akun"),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
+                          title: Text(
+                            "Pengaturan Akun",
+                            style: GoogleFonts.poppins(fontSize: 17),
+                          ),
                           trailing: const Icon(Icons.arrow_forward_ios),
                           onTap: () {
-                            Navigator.pushNamed(context, '/setting_account');
-                          },
-                        ),
-                        const Divider(),
-                        ListTile(
-                          title: const Text("Pengaturan Umum"),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: () {
-                            Navigator.pushNamed(context, '/general_setting');
+                            Navigator.pushNamed(context, '/profile');
                           },
                         ),
                       ],
@@ -164,7 +229,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     child: TextButton(
                       onPressed: () async {
-                        authcubit.logout();
+                        context.read<AuthCubit>().logout();
                         Navigator.of(context).pushReplacementNamed('/splash');
                       },
                       child: const Text(

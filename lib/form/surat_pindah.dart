@@ -4,18 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:adminduk_puger/widget/upload_photo.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_state.dart';
 
-import 'package:form_builder_validators/form_builder_validators.dart';
-
-class KkForm extends StatefulWidget {
-  KkForm({Key? key}) : super(key: key);
+class MovingForm extends StatefulWidget {
+  MovingForm({Key? key}) : super(key: key);
 
   @override
-  _KKFormState createState() => _KKFormState();
+  _MovingFormState createState() => _MovingFormState();
 }
 
-class _KKFormState extends State<KkForm> {
+class _MovingFormState extends State<MovingForm> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
 
@@ -33,27 +32,30 @@ class _KKFormState extends State<KkForm> {
       final token = authState.token;
       final formData = FormData.fromMap({
         'user_id': userId,
-
         'name': _formKey.currentState!.value['name'],
-        'form': await MultipartFile.fromFile(
-          _formKey.currentState!.value['form'][0].path,
+        'moving_letter': await MultipartFile.fromFile(
+          _formKey.currentState!.value['moving_letter'][0].path,
+        ),
+        'kk': await MultipartFile.fromFile(
+          _formKey.currentState!.value['kk'][0].path,
         ),
         'ktp': await MultipartFile.fromFile(
           _formKey.currentState!.value['ktp'][0].path,
         ),
-        'maried_certificated': await MultipartFile.fromFile(
-          _formKey.currentState!.value['maried_certificated'][0].path,
+        'maried_certificate': await MultipartFile.fromFile(
+          _formKey.currentState!.value['maried_certificate'][0].path,
+        ),
+        'consent_partner': await MultipartFile.fromFile(
+          _formKey.currentState!.value['consent_partner'][0].path,
         ),
       });
 
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'http://localhost:8000/api/kk',
+          'http://localhost:8000/api/movingletter',
           data: formData,
-          options: Options(
-            headers: {"Au_KtpFormStatethorization": "Bearer $token"},
-          ),
+          options: Options(headers: {"Authorization": "Bearer $token"}),
         );
 
         if (response.statusCode == 200) {
@@ -79,7 +81,7 @@ class _KKFormState extends State<KkForm> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Pembuatan Kartu Keluarga'),
+        title: const Text('Pembuatan Surat Pindah'),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
@@ -117,12 +119,10 @@ class _KKFormState extends State<KkForm> {
                         FormBuilderValidators.required(),
                       ]),
                     ),
-                    const SizedBox(height: 20),
-
+                    const SizedBox(height: 15),
                     ImagePickerField(
-                      name: 'form',
-                      labelText:
-                          'Upload foto Formulir Perekaman yang sudah diisi',
+                      name: 'kk',
+                      labelText: 'Upload Foto Kartu Keluarga',
                       maxImages: 1,
                     ),
                     const SizedBox(height: 15),
@@ -133,11 +133,18 @@ class _KKFormState extends State<KkForm> {
                     ),
                     const SizedBox(height: 20),
                     ImagePickerField(
-                      name: 'maried_certificated',
-                      labelText: 'Akte Nikah jika sudah menikah',
+                      name: 'moving_letter_certificate',
+                      labelText: 'Surat Keterangan Pindah dari RT',
                       maxImages: 1,
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
+                    ImagePickerField(
+                      name: 'consent_partner',
+                      labelText:
+                          'Surat Persetujuan Pasangan, Jika tidak ada Boleh Kosong',
+                      maxImages: 1,
+                    ),
+                    const SizedBox(height: 20),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

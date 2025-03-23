@@ -1,6 +1,7 @@
 import 'package:adminduk_puger/cubit/submission_cubit.dart';
+import 'package:adminduk_puger/screen/setting_account.dart';
 import 'package:flutter/material.dart';
-import 'package:adminduk_puger/screen/login.dart';
+import 'package:adminduk_puger/screen/Auth/login.dart';
 import 'package:adminduk_puger/screen/splash.dart';
 import 'package:adminduk_puger/screen/home.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,10 @@ import 'package:adminduk_puger/cubit/Auth/Auth_repository.dart';
 import 'package:adminduk_puger/form/kk_form.dart';
 import 'package:adminduk_puger/form/akte_lahir.dart';
 import 'package:adminduk_puger/form/akte_mati.dart';
+import 'package:adminduk_puger/form/surat_pindah.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:adminduk_puger/screen/Auth/register.dart';
+import 'package:adminduk_puger/screen/Auth/verificatoin_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,18 +35,23 @@ class MyApp extends StatelessWidget {
     return FutureBuilder<String?>(
       future: authCubit.getToken(),
       builder: (context, snapshot) {
-        debugPrint('Token: ${snapshot.data}');
         if (snapshot.connectionState == ConnectionState.waiting) {
           return MaterialApp(home: SplashScreen());
         }
+
         final token = snapshot.data;
+
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => authCubit..loaduser()),
-            BlocProvider(create: (context) => SubmissionCubit()),
+            BlocProvider(
+              create: (context) {
+                return SubmissionCubit();
+              },
+            ),
           ],
           child: MaterialApp(
-            initialRoute: token == null ? '/login' : '/home',
+            initialRoute: token == null ? '/splash' : '/home',
             routes: {
               '/splash': (context) => SplashScreen(),
               '/login': (context) => LoginScreen(),
@@ -52,6 +62,18 @@ class MyApp extends StatelessWidget {
               '/kkform': (context) => KkForm(),
               '/birthcertif': (context) => BirthCertif(),
               '/diecertif': (context) => DieCertif(),
+              '/moving_letter': (context) => MovingForm(),
+              '/profile': (context) => SettingAccount(),
+              '/regist': (context) => RegisterScreen(),
+              '/verify': (context) {
+                final args =
+                    ModalRoute.of(context)!.settings.arguments
+                        as Map<String, dynamic>;
+                return VerifyScreen(
+                  userId: args["userId"],
+                  email: args["email"],
+                );
+              },
             },
           ),
         );

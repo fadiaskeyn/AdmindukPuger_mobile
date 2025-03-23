@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:adminduk_puger/widget/upload_photo.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_state.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 class KtpForm extends StatefulWidget {
   KtpForm({Key? key}) : super(key: key);
@@ -30,7 +31,8 @@ class _KtpFormState extends State<KtpForm> {
       final userId = authState.userId;
       final token = authState.token;
       final formData = FormData.fromMap({
-        'user_id': userId, // Tambahkan user_id
+        'user_id': userId,
+        'name': _formKey.currentState!.value['name'],
         'form': await MultipartFile.fromFile(
           _formKey.currentState!.value['form'][0].path,
         ),
@@ -96,6 +98,17 @@ class _KtpFormState extends State<KtpForm> {
                       color: Colors.black87,
                     ),
                     textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 15),
+                  FormBuilderTextField(
+                    name: 'name',
+                    decoration: const InputDecoration(
+                      labelText: 'Nama Pengaju',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
                   ),
                   const SizedBox(height: 20),
                   ImagePickerField(

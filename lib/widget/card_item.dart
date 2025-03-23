@@ -17,6 +17,8 @@ class CardItem extends StatelessWidget {
     return GestureDetector(
       onTap: onPress,
       child: Container(
+        height: 150,
+        width: 150,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
@@ -29,13 +31,13 @@ class CardItem extends StatelessWidget {
             ),
           ],
         ),
-        padding: EdgeInsets.all(15),
+        padding: EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
             ),
             Spacer(),
             Row(
@@ -44,8 +46,8 @@ class CardItem extends StatelessWidget {
                 Icon(Icons.arrow_forward, color: Colors.grey, size: 35),
                 Image.asset(
                   'assets/images/icons/$iconPath',
-                  width: 71,
-                  height: 71,
+                  width: 65,
+                  height: 65,
                 ),
               ],
             ),
