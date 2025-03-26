@@ -46,12 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
           setState(() {
             name = response.data['name'];
             email = response.data['email'];
-            phone =
-                response.data['phone'] ??
-                'Not Available'; // Add phone if available
-            address =
-                response.data['address'] ??
-                'Not Available'; // Add address if available
+            phone = response.data['phone'] ?? 'Not Available';
           });
         } else {
           print('Failed to fetch user data');
@@ -168,17 +163,6 @@ class _SettingsPageState extends State<SettingsPage> {
                               SizedBox(width: 12),
                               Text(
                                 email ?? 'Not Available',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.location_on, color: dongker, size: 30),
-                              SizedBox(width: 12),
-                              Text(
-                                address ?? 'Not Available',
                                 style: TextStyle(fontSize: 20),
                               ),
                             ],

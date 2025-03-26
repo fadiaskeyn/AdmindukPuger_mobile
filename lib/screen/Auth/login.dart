@@ -6,6 +6,7 @@ import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/gestures.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -104,8 +105,18 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {
-                    print("Lupa Password pressed");
+                  onPressed: () async {
+                    final url = 'http://localhost:8000/forgot-password';
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(
+                        Uri.parse(url),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Gagal membuka dokumen')),
+                      );
+                    }
                   },
                   child: Text(
                     "Lupa Password?",
@@ -117,7 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
               BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is AuthEmailNotVerified) {
-                    // Tampilkan snackbar saat email belum diverifikasi
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
@@ -132,12 +142,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       context,
                     ).showSnackBar(SnackBar(content: Text(state.error)));
                   } else if (state is AuthSuccess) {
-                    // Navigasi ke halaman beranda atau dashboard
                     Navigator.of(context).pushReplacementNamed('/home');
                   }
                 },
                 builder: (context, state) {
                   return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: dongker,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
                     onPressed:
                         state is AuthLoading
                             ? null
@@ -152,7 +168,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? const CircularProgressIndicator(
                               color: Colors.white,
                             )
-                            : Text('Masuk'),
+                            : Text(
+                              'Masuk',
+                              style: GoogleFonts.poppins(color: Colors.white),
+                              selectionColor: Colors.white,
+                            ),
                   );
                 },
               ),

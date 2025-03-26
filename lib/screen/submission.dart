@@ -17,6 +17,7 @@ class SubmissionPage extends StatefulWidget {
 class _SubmissionPageState extends State<SubmissionPage> {
   final int _currentIndex = 1;
   final List<String> _routes = ['/home', '/submission', '/setting'];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -24,20 +25,24 @@ class _SubmissionPageState extends State<SubmissionPage> {
     final authCubit = context.read<AuthCubit>();
     final String userId = authCubit.getUserId().toString();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SubmissionCubit>().fetchSubmissions(userId);
+      context.read<SubmissionCubit>().fetchSubmissions();
     });
+
+    // Tambahkan listener untuk TextEditingController untuk memantau input pencarian
+    _searchController.addListener(_onSearchChanged);
   }
 
-  Future<void> _loadUserIdAndFetchSubmissions() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
 
-    if (userId != null) {
-      context.read<SubmissionCubit>().fetchSubmissions(userId);
-    } else {
-      // Handle kalau userId nggak ketemu, misal redirect ke login
-      print("User ID not found. Redirect to login maybe?");
-    }
+  // Fungsi ini akan dipanggil setiap kali teks di search bar berubah
+  void _onSearchChanged() {
+    final query = _searchController.text;
+    context.read<SubmissionCubit>().filterSubmissions(query);
   }
 
   void _onTap(BuildContext context, int index) {
@@ -46,46 +51,51 @@ class _SubmissionPageState extends State<SubmissionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Container(
-            height: 150,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomCenter,
-                colors: [putih, biru],
-              ),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(34),
-                bottomRight: Radius.circular(34),
-              ),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 30),
-                const Text(
-                  "Pengajuan Dokumen",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            Container(
+              height: 150,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomCenter,
+                  colors: [putih, biru],
                 ),
-                const SizedBox(height: 15),
-                _buildSearchBar(),
-              ],
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(34),
+                  bottomRight: Radius.circular(34),
+                ),
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 30),
+                  const Text(
+                    "Pengajuan Dokumen",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 15),
+                  _buildSearchBar(),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: SubmissionList(),
+
+            // Biarkan SubmissionList yang handle scroll
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child:
+                    SubmissionList(), // Sesuaikan SubmissionList dengan hasil filter
+              ),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNav(
-        currentIndex: _currentIndex,
-        onTap: (index) => _onTap(context, index),
+          ],
+        ),
+        bottomNavigationBar: BottomNav(
+          currentIndex: _currentIndex,
+          onTap: (index) => _onTap(context, index),
+        ),
       ),
     );
   }
@@ -107,6 +117,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
           ],
         ),
         child: TextField(
+          controller: _searchController,
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.search),
             hintText: "Search",

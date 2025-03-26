@@ -33,11 +33,7 @@ class AuthCubit extends Cubit<AuthState> {
       } else if (response['email_verified'] == false) {
         // Kasus khusus: email belum diverifikasi
         final userId = response['user_id'];
-
-        // Kirim ulang email verifikasi
         await resendVerificationEmail(userId);
-
-        // Emit state khusus
         emit(AuthEmailNotVerified(userId, email));
       } else {
         // Login gagal karena alasan lain

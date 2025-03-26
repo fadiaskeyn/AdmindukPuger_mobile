@@ -14,9 +14,9 @@ import 'package:adminduk_puger/form/kk_form.dart';
 import 'package:adminduk_puger/form/akte_lahir.dart';
 import 'package:adminduk_puger/form/akte_mati.dart';
 import 'package:adminduk_puger/form/surat_pindah.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adminduk_puger/screen/Auth/register.dart';
 import 'package:adminduk_puger/screen/Auth/verificatoin_screen.dart';
+import 'package:adminduk_puger/screen/document.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +48,7 @@ class MyApp extends StatelessWidget {
               create: (context) {
                 return SubmissionCubit();
               },
+              child: HomeScreen(),
             ),
           ],
           child: MaterialApp(
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
               '/moving_letter': (context) => MovingForm(),
               '/profile': (context) => SettingAccount(),
               '/regist': (context) => RegisterScreen(),
+              '/document': (context) => DocumentPage(),
               '/verify': (context) {
                 final args =
                     ModalRoute.of(context)!.settings.arguments
