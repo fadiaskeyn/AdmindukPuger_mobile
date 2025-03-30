@@ -53,7 +53,7 @@ class _MovingFormState extends State<MovingForm> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'http://localhost:8000/api/movingletter',
+          'https://admindukpuger.punyapadias.my.id/api/movingletter',
           data: formData,
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );
@@ -63,6 +63,7 @@ class _MovingFormState extends State<MovingForm> {
             context,
           ).showSnackBar(SnackBar(content: Text('Upload berhasil')));
           _formKey.currentState?.reset();
+          Navigator.pushNamed(context, '/home');
         } else {
           throw Exception('Upload gagal');
         }

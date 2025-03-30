@@ -44,7 +44,7 @@ class _KtpFormState extends State<KtpForm> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'http://localhost:8000/api/ektp',
+          'https://admindukpuger.punyapadias.my.id/api/ektp',
           data: formData,
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );
@@ -54,6 +54,7 @@ class _KtpFormState extends State<KtpForm> {
             context,
           ).showSnackBar(SnackBar(content: Text('Upload berhasil')));
           _formKey.currentState?.reset();
+          Navigator.pushNamed(context, '/home');
         } else {
           throw Exception('Upload gagal');
         }

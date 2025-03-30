@@ -67,7 +67,9 @@ class SubmissionCubit extends Cubit<Map<String, List<Map<String, dynamic>>>> {
       return;
     }
 
-    final url = Uri.parse('http://localhost:8000/api/submission');
+    final url = Uri.parse(
+      'https://admindukpuger.punyapadias.my.id/api/submission',
+    );
 
     try {
       final response = await http.get(

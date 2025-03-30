@@ -49,7 +49,7 @@ class _KKFormState extends State<KkForm> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'http://localhost:8000/api/kk',
+          'https://admindukpuger.punyapadias.my.id/api/kk',
           data: formData,
           options: Options(
             headers: {"Au_KtpFormStatethorization": "Bearer $token"},
@@ -61,6 +61,7 @@ class _KKFormState extends State<KkForm> {
             context,
           ).showSnackBar(SnackBar(content: Text('Upload berhasil')));
           _formKey.currentState?.reset();
+          Navigator.pushNamed(context, '/home');
         } else {
           throw Exception('Upload gagal');
         }

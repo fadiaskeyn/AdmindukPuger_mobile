@@ -68,7 +68,7 @@ class _KtpFormState extends State<BirthCertif> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'http://localhost:8000/api/birthcertif',
+          'https://admindukpuger.punyapadias.my.id/api/birthcertif',
           data: formData,
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );
@@ -80,6 +80,7 @@ class _KtpFormState extends State<BirthCertif> {
             context,
           ).showSnackBar(SnackBar(content: Text('Upload berhasil')));
           _formKey.currentState?.reset();
+          Navigator.pushNamed(context, '/home');
         } else {
           throw Exception('Upload gagal');
         }

@@ -54,7 +54,7 @@ class _DieFormState extends State<DieCertif> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'http://localhost:8000/api/diecertif',
+          'https://admindukpuger.punyapadias.my.id/api/diecertif',
           data: formData,
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );
@@ -64,6 +64,7 @@ class _DieFormState extends State<DieCertif> {
             context,
           ).showSnackBar(SnackBar(content: Text('Upload berhasil')));
           _formKey.currentState?.reset();
+          Navigator.pushNamed(context, '/home');
         } else {
           throw Exception('Upload gagal');
         }

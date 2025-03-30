@@ -12,7 +12,7 @@ class DocumentCubit extends Cubit<List<DocumentModel>> {
 
   Future<void> loadDocuments() async {
     final response = await http.get(
-      Uri.parse('http://localhost:8000/api/docs'),
+      Uri.parse('https://admindukpuger.punyapadias.my.id/api/docs'),
     );
 
     if (response.statusCode == 200) {

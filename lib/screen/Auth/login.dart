@@ -106,7 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () async {
-                    final url = 'http://localhost:8000/forgot-password';
+                    final url =
+                        'https://admindukpuger.punyapadias.my.id/forgot-password';
                     if (await canLaunchUrl(Uri.parse(url))) {
                       await launchUrl(
                         Uri.parse(url),
