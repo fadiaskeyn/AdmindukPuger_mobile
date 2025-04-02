@@ -42,7 +42,7 @@ class DocumentPage extends StatelessWidget {
                         icon: const Icon(Icons.download),
                         onPressed: () async {
                           final url =
-                              'http://localhost:8000/storage/${documents[index].path}';
+                              'https://admindukpuger.punyapadias.my.id/storage/${documents[index].path}';
                           if (await canLaunchUrl(Uri.parse(url))) {
                             await launchUrl(
                               Uri.parse(url),

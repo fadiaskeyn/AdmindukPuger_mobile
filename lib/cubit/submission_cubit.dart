@@ -66,11 +66,9 @@ class SubmissionCubit extends Cubit<Map<String, List<Map<String, dynamic>>>> {
       print("Token tidak ditemukan, tidak dapat mengambil data");
       return;
     }
-
     final url = Uri.parse(
       'https://admindukpuger.punyapadias.my.id/api/submission',
     );
-
     try {
       final response = await http.get(
         url,
@@ -121,7 +119,6 @@ class SubmissionCubit extends Cubit<Map<String, List<Map<String, dynamic>>>> {
       emit(_originalSubmissions);
     } else {
       Map<String, List<Map<String, dynamic>>> filteredData = {};
-
       _originalSubmissions.forEach((category, submissions) {
         final filteredList =
             submissions.where((submission) {
