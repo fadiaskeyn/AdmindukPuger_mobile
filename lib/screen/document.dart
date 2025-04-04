@@ -41,18 +41,18 @@ class DocumentPage extends StatelessWidget {
                       trailing: IconButton(
                         icon: const Icon(Icons.download),
                         onPressed: () async {
-                          final url =
+                          String fileName = documents[index].judul.replaceAll(
+                            ' ',
+                            '_',
+                          );
+                          String url =
                               'https://admindukpuger.punyapadias.my.id/storage/${documents[index].path}';
-                          if (await canLaunchUrl(Uri.parse(url))) {
-                            await launchUrl(
-                              Uri.parse(url),
-                              mode: LaunchMode.externalApplication,
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Gagal membuka dokumen')),
-                            );
-                          }
+
+                          await DocumentCubit.downloadDocument(
+                            fileName,
+                            url,
+                            context,
+                          );
                         },
                       ),
                       title: Text(

@@ -25,24 +25,43 @@ class DocumentCubit extends Cubit<List<DocumentModel>> {
     }
   }
 
-  Future<void> downloadDocument(String fileName, String url, context) async {
+  // Buat fungsi download menjadi static
+  static Future<void> downloadDocument(
+    String fileName,
+    String url,
+    BuildContext context,
+  ) async {
     try {
-      // Minta izin
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Izin penyimpanan ditolak")),
-        );
-        return;
+      // Minta izin penyimpanan
+      if (Platform.isAndroid) {
+        var status = await Permission.storage.request();
+        if (!status.isGranted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Izin penyimpanan ditolak")),
+          );
+          return;
+        }
       }
-      Directory directory = Directory('/storage/emulated/0/Download');
+
+      // Tentukan lokasi penyimpanan
+      Directory? directory;
+      if (Platform.isAndroid) {
+        directory = Directory('/storage/emulated/0/Download');
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
       if (!await directory.exists()) {
         directory = await getApplicationDocumentsDirectory();
       }
-      String savePath = '${directory.path}/$fileName';
+
+      String savePath = '${directory.path}/$fileName.pdf';
+
+      // Mulai download
       Dio dio = Dio();
       await dio.download(url, savePath);
 
+      // Tampilkan notifikasi berhasil
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Dokumen disimpan di: $savePath")));
