@@ -278,7 +278,16 @@ class _HomeScreenState extends State<HomeScreen> {
               onPress:
                   hasPending(data['ektp'])
                       ? showPendingSnackBar
-                      : () => Navigator.pushNamed(context, '/ktpform'),
+                      : () => Navigator.pushNamed(context, '/ktp_option'),
+            ),
+          if (submittedTypes.contains('kia'))
+            CardItem(
+              title: "Kartu Identitas Anak (KIA)",
+              iconPath: "kids.png",
+              onPress:
+                  hasPending(data['kia'])
+                      ? showPendingSnackBar
+                      : () => Navigator.pushNamed(context, '/kia_option'),
             ),
           if (submittedTypes.contains('kk'))
             CardItem(

@@ -68,7 +68,9 @@ class _SettingAccountState extends State<SettingAccount> {
     String currentValue,
   ) async {
     final controller = TextEditingController(text: currentValue);
-    final result = await showDialog<String>(
+
+    // Step 1: Show dialog, ambil hasil inputan
+    final newValue = await showDialog<String>(
       context: context,
       builder:
           (context) => AlertDialog(
@@ -92,93 +94,15 @@ class _SettingAccountState extends State<SettingAccount> {
                 child: const Text("Batal"),
               ),
               ElevatedButton(
-                onPressed: () async {
-                  final newValue = controller.text.trim();
-                  if (newValue.isEmpty) {
+                onPressed: () {
+                  final text = controller.text.trim();
+                  if (text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('$label tidak boleh kosong')),
                     );
                     return;
                   }
-
-                  Navigator.of(context).pop(newValue);
-
-                  // Show loading indicator
-                  setState(() {
-                    isLoading = true;
-                  });
-
-                  final authCubit = context.read<AuthCubit>();
-                  final userId = await authCubit.getUserId();
-
-                  if (userId != null) {
-                    try {
-                      // Update only the specific field that was changed
-                      switch (label) {
-                        case "Nama":
-                          await authCubit.updateProfile(
-                            userId,
-                            newValue, // Updated name
-                            email, // Existing email
-                            phone, // Existing phone
-                          );
-                          setState(() {
-                            name = newValue;
-                          });
-                          break;
-                        case "Email":
-                          await authCubit.updateProfile(
-                            userId,
-                            name, // Existing name
-                            newValue, // Updated email
-                            phone, // Existing phone
-                          );
-                          setState(() {
-                            email = newValue;
-                          });
-                          break;
-                        case "No. Telp":
-                          await authCubit.updateProfile(
-                            userId,
-                            name, // Existing name
-                            email, // Existing email
-                            newValue, // Updated phone
-                          );
-                          setState(() {
-                            phone = newValue;
-                          });
-                          break;
-                        case "Password":
-                          // This would need a separate endpoint for password updates
-                          // For now, just show a placeholder message
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Fitur update password belum tersedia',
-                              ),
-                            ),
-                          );
-                          break;
-                      }
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('$label berhasil diperbarui')),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Gagal memperbarui $label: ${e.toString()}',
-                          ),
-                        ),
-                      );
-                    }
-                  }
-
-                  // Hide loading indicator
-                  setState(() {
-                    isLoading = false;
-                  });
+                  Navigator.of(context).pop(text); // return value
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -187,12 +111,89 @@ class _SettingAccountState extends State<SettingAccount> {
                 ),
                 child: const Text(
                   "Simpan",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.black87),
                 ),
               ),
             ],
           ),
     );
+
+    // Step 2: Kalau user batal, newValue = null
+    if (newValue == null) return;
+
+    // Step 3: Update profile di sini, context aman!
+    setState(() {
+      isLoading = true;
+    });
+
+    final authCubit = context.read<AuthCubit>();
+    final userId = await authCubit.getUserId();
+
+    if (userId != null) {
+      try {
+        switch (label) {
+          case "Nama":
+            await authCubit.updateProfile(
+              userId,
+              newValue,
+              email,
+              phone,
+              password,
+            );
+            setState(() {
+              name = newValue;
+            });
+            break;
+          case "Email":
+            await authCubit.updateProfile(
+              userId,
+              name,
+              newValue,
+              phone,
+              password,
+            );
+            setState(() {
+              email = newValue;
+            });
+            break;
+          case "No. Telp":
+            await authCubit.updateProfile(
+              userId,
+              name,
+              email,
+              newValue,
+              password,
+            );
+            setState(() {
+              phone = newValue;
+            });
+            break;
+          case "Password":
+            await authCubit.updateProfile(
+              userId,
+              name,
+              email,
+              newValue,
+              password,
+            );
+            setState(() {
+              password = newValue;
+            });
+            break;
+        }
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$label berhasil diperbarui')));
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Gagal memperbarui $label: $e')));
+      }
+    }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void _onTap(BuildContext context, int index) {

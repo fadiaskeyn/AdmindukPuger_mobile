@@ -38,7 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
         // Fetch user data using the token
         Dio dio = Dio();
         Response response = await dio.get(
-          "http://localhost:8000/api/user",
+          "https://admindukpuger.punyapadias.my.id/api/user",
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );
 
@@ -151,7 +151,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               Icon(Icons.phone, color: dongker, size: 30),
                               SizedBox(width: 12),
                               Text(
-                                phone ?? 'Not Available',
+                                phone ?? 'Kosong',
                                 style: TextStyle(fontSize: 20),
                               ),
                             ],
@@ -162,7 +162,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               Icon(Icons.email, color: dongker, size: 30),
                               SizedBox(width: 12),
                               Text(
-                                email ?? 'Not Available',
+                                email ?? 'Silahkan Logout & Login Ulang',
                                 style: TextStyle(fontSize: 20),
                               ),
                             ],

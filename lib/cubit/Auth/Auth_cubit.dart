@@ -61,7 +61,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token'); // Bisa return null kalau belum ada
+    return prefs.getString('token');
   }
 
   Future<void> saveUserId(int userId) async {
@@ -127,6 +127,42 @@ class AuthCubit extends Cubit<AuthState> {
     return null;
   }
 
+  Future<void> updateProfile(
+    int userId,
+    String name,
+    String email,
+    String phone,
+    String password,
+  ) async {
+    try {
+      emit(AuthLoading());
+      final token = await getToken();
+      if (token != null) {
+        Dio dio = Dio();
+        Response response = await dio.put(
+          "https://admindukpuger.punyapadias.my.id/api/updateprofile/$userId",
+          data: {
+            'name': name,
+            'email': email,
+            'phone': phone,
+            'password': password,
+          },
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+        );
+
+        if (response.statusCode == 200) {
+          emit(AuthSuccess(token, userId));
+        } else {
+          emit(AuthFailure("Gagal mengupdate profil"));
+        }
+      } else {
+        emit(AuthFailure("Token tidak ditemukan"));
+      }
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
+
   Future<bool> deleteAccount(int userId) async {
     try {
       final token = await getToken();
@@ -146,38 +182,6 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       print("Delete account error: $e");
       return false;
-    }
-  }
-
-  Future<void> updateProfile(
-    int userId,
-    String name,
-    String email,
-    String phone,
-  ) async {
-    try {
-      // Tampilkan loading state
-      emit(AuthLoading());
-
-      final token = await getToken();
-      if (token != null) {
-        Dio dio = Dio();
-        Response response = await dio.put(
-          "https://admindukpuger.punyapadias.my.id/api/updateprofile/$userId",
-          data: {'name': name, 'email': email, 'phone': phone},
-          options: Options(headers: {"Authorization": "Bearer $token"}),
-        );
-
-        if (response.statusCode == 200) {
-          emit(AuthSuccess(token, userId));
-        } else {
-          emit(AuthFailure("Gagal mengupdate profil"));
-        }
-      } else {
-        emit(AuthFailure("Token tidak ditemukan"));
-      }
-    } catch (e) {
-      emit(AuthFailure(e.toString()));
     }
   }
 

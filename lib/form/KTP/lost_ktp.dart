@@ -7,14 +7,14 @@ import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_state.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-class KtpForm extends StatefulWidget {
-  KtpForm({Key? key}) : super(key: key);
+class LostKtp extends StatefulWidget {
+  LostKtp({Key? key}) : super(key: key);
 
   @override
   _KtpFormState createState() => _KtpFormState();
 }
 
-class _KtpFormState extends State<KtpForm> {
+class _KtpFormState extends State<LostKtp> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
 
@@ -33,8 +33,8 @@ class _KtpFormState extends State<KtpForm> {
       final formData = FormData.fromMap({
         'user_id': userId,
         'name': _formKey.currentState!.value['name'],
-        'form': await MultipartFile.fromFile(
-          _formKey.currentState!.value['form'][0].path,
+        'lostletter': await MultipartFile.fromFile(
+          _formKey.currentState!.value['lostletter'][0].path,
         ),
         'kk': await MultipartFile.fromFile(
           _formKey.currentState!.value['KK'][0].path,
@@ -44,11 +44,10 @@ class _KtpFormState extends State<KtpForm> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'https://admindukpuger.punyapadias.my.id/api/ektp',
+          'https://admindukpuger.punyapadias.my.id/api/lostektp',
           data: formData,
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );
-
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(
             context,
@@ -73,7 +72,7 @@ class _KtpFormState extends State<KtpForm> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Pembuatan KTP'),
+        title: const Text('KTP Hilang'),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
@@ -113,12 +112,11 @@ class _KtpFormState extends State<KtpForm> {
                   ),
                   const SizedBox(height: 20),
                   ImagePickerField(
-                    name: 'form',
-                    labelText:
-                        'Upload foto Formulir Perekaman yang sudah diisi',
+                    name: 'lostletter',
+                    labelText: 'Upload Foto Surat Kehilangan dari Polisi',
                     maxImages: 1,
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 20),
                   ImagePickerField(
                     name: 'KK',
                     labelText: 'Upload Foto Kartu Keluarga',
