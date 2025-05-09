@@ -33,6 +33,8 @@ class _KtpFormState extends State<NewKtp> {
       final formData = FormData.fromMap({
         'user_id': userId,
         'name': _formKey.currentState!.value['name'],
+        'nik': _formKey.currentState!.value['nik'],
+        'nokk': _formKey.currentState!.value['nokk'],
         'kk': await MultipartFile.fromFile(
           _formKey.currentState!.value['KK'][0].path,
         ),
@@ -100,6 +102,28 @@ class _KtpFormState extends State<NewKtp> {
                     name: 'name',
                     decoration: const InputDecoration(
                       labelText: 'Nama Pengaju',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
+                  ),
+                  const SizedBox(height: 15),
+                  FormBuilderTextField(
+                    name: 'nik',
+                    decoration: const InputDecoration(
+                      labelText: 'NIK',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
+                  ),
+                  const SizedBox(height: 15),
+                  FormBuilderTextField(
+                    name: 'nokk',
+                    decoration: const InputDecoration(
+                      labelText: 'No. KK',
                       border: OutlineInputBorder(),
                     ),
                     validator: FormBuilderValidators.compose([

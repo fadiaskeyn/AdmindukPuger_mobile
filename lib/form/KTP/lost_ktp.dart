@@ -33,6 +33,8 @@ class _KtpFormState extends State<LostKtp> {
       final formData = FormData.fromMap({
         'user_id': userId,
         'name': _formKey.currentState!.value['name'],
+        'nik': _formKey.currentState!.value['nik'],
+        'nokk': _formKey.currentState!.value['nokk'],
         'lostletter': await MultipartFile.fromFile(
           _formKey.currentState!.value['lostletter'][0].path,
         ),
@@ -115,6 +117,22 @@ class _KtpFormState extends State<LostKtp> {
                     name: 'lostletter',
                     labelText: 'Upload Foto Surat Kehilangan dari Polisi',
                     maxImages: 1,
+                  ),
+                  const SizedBox(height: 20),
+                  FormBuilderTextField(
+                    name: 'nik',
+                    decoration: const InputDecoration(
+                      labelText: 'NIK',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  FormBuilderTextField(
+                    name: 'nokk',
+                    decoration: const InputDecoration(
+                      labelText: 'No. KK',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   ImagePickerField(

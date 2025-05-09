@@ -191,6 +191,8 @@ class AuthCubit extends Cubit<AuthState> {
     String phone,
     String password,
     String address,
+    String nik,
+    String nokk,
   ) async {
     emit(AuthLoading());
     try {
@@ -200,6 +202,8 @@ class AuthCubit extends Cubit<AuthState> {
         phone,
         password,
         address,
+        nik,
+        nokk,
       );
       print("Response dari backend: $result");
 

@@ -18,6 +18,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _nikController = TextEditingController();
+  final TextEditingController _noKkController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
@@ -28,6 +30,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _nikController.dispose();
+    _noKkController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
@@ -98,6 +102,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _phoneController.text,
         _passwordController.text,
         _addressController.text,
+        _nikController.text,
+        _noKkController.text,
       );
     }
   }
@@ -185,6 +191,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   validator: _validateName,
                   decoration: InputDecoration(
                     labelText: 'Nama Lengkap',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    prefixIcon: const Icon(Icons.person),
+                  ),
+                ),
+                const SizedBox(height: 30),
+
+                // Name Input
+                TextFormField(
+                  controller: _nikController,
+                  validator: _validateName,
+                  decoration: InputDecoration(
+                    labelText: 'NIK',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    prefixIcon: const Icon(Icons.person),
+                  ),
+                ),
+                const SizedBox(height: 30),
+
+                // Name Input
+                TextFormField(
+                  controller: _noKkController,
+                  validator: _validateName,
+                  decoration: InputDecoration(
+                    labelText: 'No. KK',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

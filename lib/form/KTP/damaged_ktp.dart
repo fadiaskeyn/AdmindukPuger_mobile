@@ -21,7 +21,6 @@ class _KtpFormState extends State<DamagedKtp> {
   Future<void> _submitForm() async {
     if (_formKey.currentState?.saveAndValidate() == true) {
       setState(() => _isLoading = true);
-
       final authState = context.read<AuthCubit>().state;
       if (authState is! AuthSuccess) {
         setState(() => _isLoading = false);
@@ -33,6 +32,8 @@ class _KtpFormState extends State<DamagedKtp> {
       final formData = FormData.fromMap({
         'user_id': userId,
         'name': _formKey.currentState!.value['name'],
+        'nik': _formKey.currentState!.value['nik'],
+        'nokk': _formKey.currentState!.value['nokk'],
         'kk': await MultipartFile.fromFile(
           _formKey.currentState!.value['KK'][0].path,
         ),
@@ -106,6 +107,22 @@ class _KtpFormState extends State<DamagedKtp> {
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                     ]),
+                  ),
+                  const SizedBox(height: 15),
+                  FormBuilderTextField(
+                    name: 'nik',
+                    decoration: const InputDecoration(
+                      labelText: 'NIK',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  FormBuilderTextField(
+                    name: 'nokk',
+                    decoration: const InputDecoration(
+                      labelText: 'No. KK',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   ImagePickerField(

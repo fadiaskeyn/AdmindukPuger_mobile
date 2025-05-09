@@ -50,6 +50,8 @@ class AuthRepository {
     String phone,
     String password,
     String address,
+    String nik,
+    String nokk,
   ) async {
     try {
       Dio dio = Dio();
@@ -61,6 +63,8 @@ class AuthRepository {
           'phone': phone,
           'password': password,
           'address': address,
+          'nik': nik,
+          'nokk': nokk,
         },
       );
 
