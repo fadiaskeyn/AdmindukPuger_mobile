@@ -33,6 +33,7 @@ class _KtpFormState extends State<Kia5> {
       final formData = FormData.fromMap({
         'user_id': userId,
         'name': _formKey.currentState!.value['name'],
+        'nik': _formKey.currentState!.value['nik'],
         'kk': await MultipartFile.fromFile(
           _formKey.currentState!.value['KK'][0].path,
         ),
@@ -112,6 +113,14 @@ class _KtpFormState extends State<Kia5> {
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),
                       ]),
+                    ),
+                    const SizedBox(height: 15),
+                    FormBuilderTextField(
+                      name: 'nik',
+                      decoration: const InputDecoration(
+                        labelText: 'NIK',
+                        border: OutlineInputBorder(),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     ImagePickerField(

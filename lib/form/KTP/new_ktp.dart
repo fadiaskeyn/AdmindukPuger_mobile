@@ -34,7 +34,7 @@ class _KtpFormState extends State<NewKtp> {
         'user_id': userId,
         'name': _formKey.currentState!.value['name'],
         'nik': _formKey.currentState!.value['nik'],
-        'nokk': _formKey.currentState!.value['nokk'],
+        // 'nokk': _formKey.currentState!.value['nokk'],
         'kk': await MultipartFile.fromFile(
           _formKey.currentState!.value['KK'][0].path,
         ),
@@ -119,17 +119,17 @@ class _KtpFormState extends State<NewKtp> {
                       FormBuilderValidators.required(),
                     ]),
                   ),
-                  const SizedBox(height: 15),
-                  FormBuilderTextField(
-                    name: 'nokk',
-                    decoration: const InputDecoration(
-                      labelText: 'No. KK',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                    ]),
-                  ),
+                  //      const SizedBox(height: 15),
+                  // FormBuilderTextField(
+                  //   name: 'nokk',
+                  //   decoration: const InputDecoration(
+                  //     labelText: 'No. KK',
+                  //    border: OutlineInputBorder(),
+                  //      ),
+                  // validator: FormBuilderValidators.compose([
+                  //  FormBuilderValidators.required(),
+                  //   ]),
+                  // ),
                   const SizedBox(height: 20),
                   ImagePickerField(
                     name: 'KK',
