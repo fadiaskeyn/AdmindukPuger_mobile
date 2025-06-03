@@ -68,7 +68,7 @@ class _KtpFormState extends State<BirthCertif> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'https://admindukpuger.punyapadias.my.id/api/birthcertif',
+          'https://adminduk-kec-puger.my.id/api/birthcertif',
           data: formData,
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );

@@ -6,7 +6,7 @@ class AuthRepository {
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       final response = await _dio.post(
-        'https://admindukpuger.punyapadias.my.id/api/login',
+        'https://adminduk-kec-puger.my.id/api/login',
         data: {'email': email, 'password': password},
       );
 
@@ -35,7 +35,7 @@ class AuthRepository {
   Future<void> resendVerificationEmail(int userId) async {
     try {
       await _dio.post(
-        "https://admindukpuger.punyapadias.my.id/api/email/resend-by-id",
+        "https://adminduk-kec-puger.my.id/api/email/resend-by-id",
         data: {"user_id": userId},
       );
       print("Email verifikasi berhasil dikirim");
@@ -56,7 +56,7 @@ class AuthRepository {
     try {
       Dio dio = Dio();
       Response response = await dio.post(
-        "https://admindukpuger.punyapadias.my.id/api/register",
+        "https://adminduk-kec-puger.my.id/api/register",
         data: {
           'name': name,
           'email': email,

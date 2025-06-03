@@ -42,7 +42,7 @@ class _KtpFormState extends State<DamagedKtp> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'https://admindukpuger.punyapadias.my.id/api/damagedektp',
+          'https://adminduk-kec-puger.my.id/api/damagedektp',
           data: formData,
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );

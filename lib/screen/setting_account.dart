@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_cubit.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_state.dart';
 
@@ -10,15 +9,11 @@ class SettingAccount extends StatefulWidget {
 }
 
 class _SettingAccountState extends State<SettingAccount> {
-  final int _currentIndex = 3;
   String name = 'Loading...';
   String email = 'Loading...';
   String phone = 'Loading...';
   String password = '********'; // For display purposes
   bool isLoading = true;
-
-  final List<String> _routes = ['/home', '/outlook', '/suggestion', '/setting'];
-
   @override
   void initState() {
     super.initState();
@@ -196,10 +191,6 @@ class _SettingAccountState extends State<SettingAccount> {
     });
   }
 
-  void _onTap(BuildContext context, int index) {
-    Navigator.pushReplacementNamed(context, _routes[index]);
-  }
-
   Future<void> _deleteAccount() async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -309,7 +300,9 @@ class _SettingAccountState extends State<SettingAccount> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/setting');
+          },
         ),
         title: const Text(
           "Pengaturan Akun",

@@ -49,7 +49,7 @@ class _KKFormState extends State<KkForm> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'https://admindukpuger.punyapadias.my.id/api/kk',
+          'https://adminduk-kec-puger.my.id/api/kk',
           data: formData,
           options: Options(
             headers: {"Au_KtpFormStatethorization": "Bearer $token"},

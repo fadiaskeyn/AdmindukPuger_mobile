@@ -47,7 +47,7 @@ class _KtpFormState extends State<KiaUnder5> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'https://admindukpuger.punyapadias.my.id/api/kiaunder5',
+          'https://adminduk-kec-puger.my.id/api/kiaunder5',
           data: formData,
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );

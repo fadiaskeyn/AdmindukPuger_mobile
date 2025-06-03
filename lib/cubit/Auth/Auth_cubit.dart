@@ -78,7 +78,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       Dio dio = Dio();
       Response response = await dio.get(
-        "https://admindukpuger.punyapadias.my.id/api/user",
+        "https://adminduk-kec-puger.my.id/api/user",
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
 
@@ -113,7 +113,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (token != null) {
         Dio dio = Dio();
         Response response = await dio.get(
-          "https://admindukpuger.punyapadias.my.id/api/user",
+          "https://adminduk-kec-puger.my.id/api/user",
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );
 
@@ -139,8 +139,8 @@ class AuthCubit extends Cubit<AuthState> {
       final token = await getToken();
       if (token != null) {
         Dio dio = Dio();
-        Response response = await dio.put(
-          "https://admindukpuger.punyapadias.my.id/api/updateprofile/$userId",
+        Response response = await dio.post(
+          "https://adminduk-kec-puger.my.id/api/updateprofile/$userId",
           data: {
             'name': name,
             'email': email,
@@ -169,7 +169,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (token != null) {
         Dio dio = Dio();
         Response response = await dio.delete(
-          "https://admindukpuger.punyapadias.my.id/api/deleteaccount/$userId",
+          "https://adminduk-kec-puger.my.id/api/deleteaccount/$userId",
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );
 

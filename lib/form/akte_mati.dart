@@ -54,7 +54,7 @@ class _DieFormState extends State<DieCertif> {
       try {
         Dio dio = Dio();
         Response response = await dio.post(
-          'https://admindukpuger.punyapadias.my.id/api/diecertif',
+          'https://adminduk-kec-puger.my.id/api/diecertif',
           data: formData,
           options: Options(headers: {"Authorization": "Bearer $token"}),
         );
