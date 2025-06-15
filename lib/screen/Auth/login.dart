@@ -99,14 +99,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () async {
                     final url =
-                        'https://admindukpuger.punyapadias.my.id/forgot-password';
+                        'https://adminduk-kec-puger.my.id/forgot-password';
                     if (await canLaunchUrl(Uri.parse(url))) {
                       await launchUrl(
                         Uri.parse(url),

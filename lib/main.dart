@@ -44,7 +44,6 @@ class MyApp extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return MaterialApp(home: SplashScreen());
         }
-
         final token = snapshot.data;
 
         return MultiBlocProvider(
@@ -57,6 +56,7 @@ class MyApp extends StatelessWidget {
               child: HomeScreen(),
             ),
           ],
+
           child: MaterialApp(
             initialRoute: token == null ? '/splash' : '/home',
             routes: {

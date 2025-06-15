@@ -17,6 +17,19 @@ class LostKtp extends StatefulWidget {
 class _KtpFormState extends State<LostKtp> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
+  bool _isSelfSubmission = false;
+
+  Future<void> _loadProfileData() async {
+    final authState = context.read<AuthCubit>().state;
+    if (authState is AuthSuccess) {
+      final userId = authState.userId;
+      final profileData = await context.read<AuthCubit>().getProfile(userId);
+      if (profileData != null) {
+        _formKey.currentState?.fields['name']?.didChange(profileData['name']);
+        _formKey.currentState?.fields['nik']?.didChange(profileData['nik']);
+      }
+    }
+  }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.saveAndValidate() == true) {
@@ -78,117 +91,138 @@ class _KtpFormState extends State<LostKtp> {
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 6,
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: FormBuilder(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    'Silahkan lengkapi Dokumen yang diperlukan',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 15),
-                  FormBuilderTextField(
-                    name: 'name',
-                    decoration: const InputDecoration(
-                      labelText: 'Nama Pengaju',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                    ]),
-                  ),
-                  const SizedBox(height: 20),
-                  FormBuilderTextField(
-                    name: 'nik',
-                    decoration: const InputDecoration(
-                      labelText: 'NIK',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ImagePickerField(
-                    name: 'lostletter',
-                    labelText: 'Upload Foto Surat Kehilangan dari Polisi',
-                    maxImages: 1,
-                  ),
-                  //    const SizedBox(height: 20),
-                  // FormBuilderTextField(
-                  //   name: 'nokk',
-                  //   decoration: const InputDecoration(
-                  //     labelText: 'No. KK',
-                  //     border: OutlineInputBorder(),
-                  //      ),
-                  //    ),
-                  const SizedBox(height: 20),
-                  ImagePickerField(
-                    name: 'KK',
-                    labelText: 'Upload Foto Kartu Keluarga',
-                    maxImages: 1,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurple,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
-                        ),
-                        child:
-                            _isLoading
-                                ? CircularProgressIndicator(color: Colors.white)
-                                : const Text(
-                                  'Kirim',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                        onPressed: _isLoading ? null : _submitForm,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            elevation: 6,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: FormBuilder(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      'Silahkan lengkapi Dokumen yang diperlukan',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
                       ),
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.deepPurple),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
-                        ),
-                        child: const Text(
-                          'Reset',
-                          style: TextStyle(color: Colors.deepPurple),
-                        ),
-                        onPressed:
-                            _isLoading
-                                ? null
-                                : () {
-                                  _formKey.currentState?.reset();
-                                },
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 15),
+                    FormBuilderCheckbox(
+                      name: 'self_submission',
+                      title: Text('Pengajuan untuk diri sendiri'),
+                      initialValue: false,
+                      onChanged: (value) async {
+                        setState(() {
+                          _isSelfSubmission = value ?? false;
+                        });
+                        if (value == true) {
+                          await _loadProfileData();
+                        } else {
+                          _formKey.currentState?.fields['name']?.reset();
+                          _formKey.currentState?.fields['nik']?.reset();
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 15),
+                    FormBuilderTextField(
+                      name: 'name',
+                      decoration: const InputDecoration(
+                        labelText: 'Nama Pengaju',
+                        border: OutlineInputBorder(),
                       ),
-                    ],
-                  ),
-                ],
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                      ]),
+                    ),
+                    const SizedBox(height: 20),
+                    FormBuilderTextField(
+                      name: 'nik',
+                      decoration: const InputDecoration(
+                        labelText: 'NIK',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ImagePickerField(
+                      name: 'lostletter',
+                      labelText: 'Upload Foto Surat Kehilangan dari Polisi',
+                      maxImages: 1,
+                    ),
+                    //    const SizedBox(height: 20),
+                    // FormBuilderTextField(
+                    //   name: 'nokk',
+                    //   decoration: const InputDecoration(
+                    //     labelText: 'No. KK',
+                    //     border: OutlineInputBorder(),
+                    //      ),
+                    //    ),
+                    const SizedBox(height: 20),
+                    ImagePickerField(
+                      name: 'KK',
+                      labelText: 'Upload Foto Kartu Keluarga',
+                      maxImages: 1,
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepPurple,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                          ),
+                          child:
+                              _isLoading
+                                  ? CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                  : const Text(
+                                    'Kirim',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                          onPressed: _isLoading ? null : _submitForm,
+                        ),
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: Colors.deepPurple),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                          ),
+                          child: const Text(
+                            'Reset',
+                            style: TextStyle(color: Colors.deepPurple),
+                          ),
+                          onPressed:
+                              _isLoading
+                                  ? null
+                                  : () {
+                                    _formKey.currentState?.reset();
+                                  },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

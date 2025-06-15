@@ -17,6 +17,19 @@ class KiaUnder5 extends StatefulWidget {
 class _KtpFormState extends State<KiaUnder5> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
+  bool _isSelfSubmission = false;
+
+  Future<void> _loadProfileData() async {
+    final authState = context.read<AuthCubit>().state;
+    if (authState is AuthSuccess) {
+      final userId = authState.userId;
+      final profileData = await context.read<AuthCubit>().getProfile(userId);
+      if (profileData != null) {
+        _formKey.currentState?.fields['name']?.didChange(profileData['name']);
+        _formKey.currentState?.fields['nik']?.didChange(profileData['nik']);
+      }
+    }
+  }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.saveAndValidate() == true) {
@@ -102,6 +115,24 @@ class _KtpFormState extends State<KiaUnder5> {
                         color: Colors.black87,
                       ),
                       textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 15),
+                    FormBuilderCheckbox(
+                      name: 'self_submission',
+                      title: Text('Pengajuan untuk diri sendiri'),
+
+                      initialValue: false,
+                      onChanged: (value) async {
+                        setState(() {
+                          _isSelfSubmission = value ?? false;
+                        });
+                        if (value == true) {
+                          await _loadProfileData();
+                        } else {
+                          _formKey.currentState?.fields['name']?.reset();
+                          _formKey.currentState?.fields['nik']?.reset();
+                        }
+                      },
                     ),
                     const SizedBox(height: 15),
                     FormBuilderTextField(
