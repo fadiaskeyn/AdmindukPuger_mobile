@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_repository.dart';
 import 'package:adminduk_puger/cubit/Auth/Auth_state.dart';
 import 'package:dio/dio.dart';
-import 'dart:convert';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
@@ -193,6 +192,7 @@ class AuthCubit extends Cubit<AuthState> {
     String address,
     String nik,
     String nokk,
+    String photoPath,
   ) async {
     emit(AuthLoading());
     try {
@@ -204,6 +204,7 @@ class AuthCubit extends Cubit<AuthState> {
         address,
         nik,
         nokk,
+        photoPath,
       );
       print("Response dari backend: $result");
 

@@ -52,20 +52,29 @@ class AuthRepository {
     String address,
     String nik,
     String nokk,
+    String photoPath,
   ) async {
     try {
       Dio dio = Dio();
+
+      // Create FormData for multipart/form-data
+      var formData = FormData.fromMap({
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'password': password,
+        'address': address,
+        'nik': nik,
+        'nokk': nokk,
+        'photo': await MultipartFile.fromFile(
+          photoPath,
+          filename: 'profile_photo.jpg',
+        ),
+      });
+
       Response response = await dio.post(
         "https://adminduk-kec-puger.my.id/api/register",
-        data: {
-          'name': name,
-          'email': email,
-          'phone': phone,
-          'password': password,
-          'address': address,
-          'nik': nik,
-          'nokk': nokk,
-        },
+        data: formData,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
